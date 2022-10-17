@@ -42,6 +42,8 @@ namespace CodingTest
 
 
             #region PREVIOUS DAY CODE
+            //
+
 
             //public static void WantProduct()
             //{
