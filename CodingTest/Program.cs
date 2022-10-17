@@ -10,301 +10,94 @@ namespace CodingTest
     {
         static double totalCoin = 0;
         static product p = new product();
-        static bool isProductSelected = false;
+        static bool IsValidProductID = false;
         static int productIDorIndex = -1;
 
         static void Main(string[] args)
         {
-            double newCoin = VenderMachine.WantCoin(p);
+
+            Console.WriteLine("Valid Coin for this Machine ::  $0.05, $0.10, $0.25. ");
+            Console.WriteLine("\n");
+
+            Console.WriteLine("Enter Coin : ");
+            double newCoin = EnterMoreCoin(Console.ReadLine());
+
+            //double newCoin = VenderMachine.WantCoin(Console.ReadLine());
+            //while (!VenderMachine.IsValidCoin(newCoin))
+            //{
+            //    Console.WriteLine("Enter valid Coin : ");
+            //    newCoin = VenderMachine.WantCoin(Console.ReadLine());
+            //}
+
             totalCoin = totalCoin + newCoin;
-            newCoin = 0;
 
-            VenderMachine.ShowProductList();
 
-            productIDorIndex = VenderMachine.WantProduct();
+            //???
+            //double newCoin = VenderMachine.RequiredCoin(p);
+            //totalCoin = totalCoin + newCoin;
 
+            string ProductList = VenderMachine.ShowProductList();
+            Console.WriteLine("Please select product by Product ID...");
+            Console.WriteLine(ProductList);
+
+            Console.WriteLine("\n");
+
+            bool IsValidProductID = false;
+            while (!IsValidProductID)
+            {
+                Console.WriteLine("Select product from above product list :: ");
+
+                try { productIDorIndex = Convert.ToInt32(Console.ReadLine()); }
+                catch { productIDorIndex = 0; }
+
+                IsValidProductID = VenderMachine.IsValidProductID(productIDorIndex);
+                if (!IsValidProductID) { Console.WriteLine("Select Product is invalid. Please select valid product.\n"); }
+            }
+
+            Console.WriteLine("\n");
 
 
             p = VenderMachine.SelectProduct(productIDorIndex);
-            Console.WriteLine("Selected Product  is: " + p.Name);
+            Console.WriteLine("Selected Product  is: " + p.Name + ", and Price is : $" + p.amount.ToString("0.00"));
             Console.WriteLine("\n\n");
 
-            if (p.Name != null) { isProductSelected = true; }
 
-            VenderMachine.StartProcess(p, totalCoin, isProductSelected);
+            while (VenderMachine.IsRequiredCoin(p, totalCoin))
+            {
+                Console.WriteLine("Please insert $" + (p.amount - totalCoin).ToString("0.00") +
+                                   " more coin, your selected Product price is $" + p.amount + " and you have inserted $" + totalCoin.ToString("0.00") + " coin only.");
 
+                newCoin = EnterMoreCoin(Console.ReadLine());
+                totalCoin = totalCoin + newCoin;
+            }
 
-            totalCoin = totalCoin + newCoin;
+            Start_Process_To_Provide_Product(p, totalCoin);
 
-            if (isProductSelected) { VenderMachine.StartProcess(p, totalCoin); }
+        }
 
+        public static void Start_Process_To_Provide_Product(product p, double totalCoinValue)
+        {
+            double balance = totalCoinValue - p.amount;
+            if (balance == 0) { Console.WriteLine("Please collect your Product. Thank you."); }
+            if (balance > 0) { Console.WriteLine("Please collect your Product and remaining amount $" + balance.ToString("0.00") + " will return in your wallet. Thank you."); }
 
+            Console.ReadLine();
+        }
 
+        public static double EnterMoreCoin(string inputCoin)
+        {
+            double newCoin = VenderMachine.WantCoin(inputCoin);
+            while (!VenderMachine.IsValidCoin(newCoin))
+            {
+                Console.WriteLine("Enter valid Coin : ");
+                newCoin = VenderMachine.WantCoin(Console.ReadLine());
+            }
 
-            #region PREVIOUS DAY CODE
-            //
-
-
-            //public static void WantProduct()
-            //{
-            //    Console.WriteLine("Select Product : ");
-            //    int productID = Convert.ToInt32(Console.ReadLine());
-
-            //    if (productIDorIndex > 0 || productIDorIndex <= GetProductList().Count)
-            //    { isProductSelected = true; productIDorIndex = productID; }
-            //    else {   WantProduct(); }
-            //}
-
-            //public static void WantCoin()
-            //{
-
-            //    Console.WriteLine("Enter Coin : ");
-            //    double newCoin = Convert.ToDouble(Console.ReadLine());
-
-            //    if (!IsValidCoin(newCoin)) { Console.WriteLine("Invalid Coin. Please endter valid coin as $0.05, $0.10, $0.25. "); WantCoin(); return; }
-            //    else { totalCoin = totalCoin + newCoin; }
-
-            //    if (isProductSelected) { StartProcess(p, totalCoin); }
-
-            //}
-
-
-            //public static void StartProcess(product p, double totalCoinValue)
-            //{
-            //    if (totalCoinValue < p.amount)
-            //    {
-            //        Console.WriteLine("Please insert " + (p.amount - totalCoinValue).ToString("0.00") +
-            //                        ", Selected Product price is $" + p.amount + ". Thank you.");
-
-            //        WantCoin();
-            //    }
-
-            //    if (totalCoinValue == p.amount) { Console.WriteLine("Please collect your Product. Thank you."); return; }
-            //    if (totalCoinValue > p.amount) { Console.WriteLine("Please collect your Product and remaining amount will return in your wallet. Thank you."); return; }
-
-            //    Console.ReadLine();
-            //}
-
-
-            //public static bool IsValidCoin(double coinValue)
-            //{
-            //    bool isValid = false;
-            //    //(nickels(1/20 $), dimes (1/10 $), and  quarters(1 / 4 $)) and reject invalid ones(pennies(1 / 100 $)).
-            //    double[] validCoins = { 0.05, 0.10, 0.25 };
-
-            //    foreach (var coin in validCoins)
-            //    {
-            //        if (coinValue == coin) { isValid = true; break; }
-            //    }
-
-
-            //    return isValid;
-            //}
-
-            //public static List<product> GetProductList() //  or index
-            //{
-            //    //cola for $1.00, chips for $0.50, and candy for $0.65.
-
-            //    List<product> products = new List<product>();
-            //    product p = new product();
-            //    p.ID = 1;
-            //    p.Name = "cola";
-            //    p.amount = 1.00;
-            //    products.Add(p);
-
-            //    p = new product();
-            //    p.ID = 2;
-            //    p.Name = "chips";
-            //    p.amount = 0.50;
-            //    products.Add(p);
-
-            //    p = new product();
-            //    p.ID = 3;
-            //    p.Name = "candy";
-            //    p.amount = 0.65;
-            //    products.Add(p);
-
-
-            //    return products;
-
-            //}
-
-            //public static product SelectProduct(int productID) //  or index
-            //{
-            //    //cola for $1.00, chips for $0.50, and candy for $0.65.
-
-            //    List<product> products = GetProductList();
-            //    return products[productID - 1];
-
-            //}
-
-            //public static void ShowProductList() //  or index
-            //{
-            //    List<product> products = GetProductList();
-
-            //    Console.WriteLine("\n.");
-            //    Console.WriteLine("Please select product by Product ID...");
-
-            //    foreach (var p in products)
-            //    {
-            //        Console.WriteLine("ProductID : " + p.ID + ", Name : " + p.Name + ", Price : " + p.amount.ToString("0.00"));
-            //    }
-
-            //    Console.WriteLine("\n\n.");
-            //    Console.WriteLine("Select product ::  ");
-
-            //}
-
-            #endregion
+            return newCoin;
         }
     }
 }
 
 
 
-
-
-#region  OLD CODE
-
-//class Program
-//{
-//    public Program()
-//    {
-//    }
-
-//    static double totalCoin = 0;
-//    static product p = new product();
-//    static bool isProductSelected = false;
-//    static int productIDorIndex = -1;
-//    static void Main(string[] args)
-//    {
-//        WantCoin();
-
-
-//        ShowProductList();
-
-//        WantProduct();
-
-
-//        p = SelectProduct(productIDorIndex);
-//        Console.WriteLine("Selected Product  is: " + p.Name);
-
-//        StartProcess(p, totalCoin);
-
-
-//    }
-
-//    public static void WantProduct()
-//    {
-//        Console.WriteLine("Select Product : ");
-//        int productID = Convert.ToInt32(Console.ReadLine());
-
-//        if (productIDorIndex > 0 || productIDorIndex <= GetProductList().Count)
-//        { isProductSelected = true; productIDorIndex = productID; }
-//        else { WantProduct(); }
-//    }
-
-//    public static void WantCoin()
-//    {
-
-//        Console.WriteLine("Enter Coin : ");
-//        double newCoin = Convert.ToDouble(Console.ReadLine());
-
-//        if (!IsValidCoin(newCoin)) { Console.WriteLine("Invalid Coin. Please endter valid coin as $0.05, $0.10, $0.25. "); WantCoin(); return; }
-//        else { totalCoin = totalCoin + newCoin; }
-
-//        if (isProductSelected) { StartProcess(p, totalCoin); }
-
-//    }
-
-
-//    public static void StartProcess(product p, double totalCoinValue)
-//    {
-//        if (totalCoinValue < p.amount)
-//        {
-//            Console.WriteLine("Please insert " + (p.amount - totalCoinValue).ToString("0.00") +
-//                            ", Selected Product price is $" + p.amount + ". Thank you.");
-
-//            WantCoin();
-//        }
-
-//        if (totalCoinValue == p.amount) { Console.WriteLine("Please collect your Product. Thank you."); return; }
-//        if (totalCoinValue > p.amount) { Console.WriteLine("Please collect your Product and remaining amount will return in your wallet. Thank you."); return; }
-
-//        Console.ReadLine();
-//    }
-
-
-//    public static bool IsValidCoin(double coinValue)
-//    {
-//        bool isValid = false;
-//        //(nickels(1/20 $), dimes (1/10 $), and  quarters(1 / 4 $)) and reject invalid ones(pennies(1 / 100 $)).
-//        double[] validCoins = { 0.05, 0.10, 0.25 };
-
-//        foreach (var coin in validCoins)
-//        {
-//            if (coinValue == coin) { isValid = true; break; }
-//        }
-
-
-//        return isValid;
-//    }
-
-//    public static List<product> GetProductList() //  or index
-//    {
-//        //cola for $1.00, chips for $0.50, and candy for $0.65.
-
-//        List<product> products = new List<product>();
-//        product p = new product();
-//        p.ID = 1;
-//        p.Name = "cola";
-//        p.amount = 1.00;
-//        products.Add(p);
-
-//        p = new product();
-//        p.ID = 2;
-//        p.Name = "chips";
-//        p.amount = 0.50;
-//        products.Add(p);
-
-//        p = new product();
-//        p.ID = 3;
-//        p.Name = "candy";
-//        p.amount = 0.65;
-//        products.Add(p);
-
-
-//        return products;
-
-//    }
-
-//    public static product SelectProduct(int productID) //  or index
-//    {
-//        //cola for $1.00, chips for $0.50, and candy for $0.65.
-
-//        List<product> products = GetProductList();
-//        return products[productID - 1];
-
-//    }
-
-//    public static void ShowProductList() //  or index
-//    {
-//        List<product> products = GetProductList();
-
-//        Console.WriteLine("\n.");
-//        Console.WriteLine("Please select product by Product ID...");
-
-//        foreach (var p in products)
-//        {
-//            Console.WriteLine("ProductID : " + p.ID + ", Name : " + p.Name + ", Price : " + p.amount.ToString("0.00"));
-//        }
-
-//        Console.WriteLine("\n\n.");
-//        Console.WriteLine("Select product ::  ");
-
-//    }
-//}
-
-
-#endregion 
 

@@ -58,50 +58,117 @@ namespace UnitTestProject
             
         }
 
-        //[TestMethod]
-        //public void _IsValidCoin()
-        //{
-        //    //Arrange
-        //    double coinValue = 0.10;
-        //    bool expexted = true;
+        [TestMethod]
+        public void _ShowProductList()
+        {
+            //Arrange
+            List<CodingTest.product> products = CodingTest.VenderMachine.GetProductList();
 
-        //    //Act
-        //    bool status = CodingTest.VenderMachine.IsValidCoin(coinValue);
+            string inputProducts = "";
+            foreach (var p in products)
+            {
+                inputProducts = inputProducts + "ProductID : " + p.ID + ", Name : " + p.Name + ", Price : " + p.amount.ToString("0.00") + "\n";
+            }
 
-        //    //Assert
-        //    Assert.AreEqual(expexted, status);
+            string outputProducts = CodingTest.VenderMachine.ShowProductList();
 
-        //}
+            //Act
+            //bool status = CodingTest.VenderMachine.IsValidCoin(coinValue);
 
-        //[TestMethod]
-        //public void _IsValidCoin()
-        //{
-        //    //Arrange
-        //    double coinValue = 0.10;
-        //    bool expexted = true;
+            //Assert
+            var js = new JavaScriptSerializer();
+            Assert.AreEqual(js.Serialize(inputProducts), js.Serialize(outputProducts));
 
-        //    //Act
-        //    bool status = CodingTest.VenderMachine.IsValidCoin(coinValue);
+        }
 
-        //    //Assert
-        //    Assert.AreEqual(expexted, status);
+        [TestMethod]
+        public void _IsValidProductID()
+        {
+            //Arrange
+            int input = 1;
+            bool expexted = true;
 
-        //}
+            //Act
+            bool status = CodingTest.VenderMachine.IsValidProductID(input);
 
-        //[TestMethod]
-        //public void _IsValidCoin()
-        //{
-        //    //Arrange
-        //    double coinValue = 0.10;
-        //    bool expexted = true;
+            //Assert
+            Assert.AreEqual(expexted, status);
 
-        //    //Act
-        //    bool status = CodingTest.VenderMachine.IsValidCoin(coinValue);
+        }
 
-        //    //Assert
-        //    Assert.AreEqual(expexted, status);
+        [TestMethod]
+        public void _WantCoin()
+        {
+            #region Test-1
 
-        //}
+            //Arrange
+            string coinValue = "0.10"; double expexted = 0.10;
+
+            //Act
+            double output = CodingTest.VenderMachine.WantCoin(coinValue);
+
+            //Assert
+            Assert.AreEqual(expexted, output);
+
+            #endregion
+
+            #region Test-2
+
+            //Arrange
+            coinValue = "0.20"; expexted = 0.20;
+
+            //Act
+            output = CodingTest.VenderMachine.WantCoin(coinValue);
+
+            //Assert
+            Assert.AreEqual(expexted, output);
+
+            #endregion
+
+            #region Test-3
+
+            //Arrange
+            coinValue = "xyz"; expexted = 0;
+
+            //Act
+            output = CodingTest.VenderMachine.WantCoin(coinValue);
+
+            //Assert
+            Assert.AreEqual(expexted, output);
+
+            #endregion
+
+            #region Test-4
+
+            //Arrange
+            coinValue = "AB"; expexted = 0;
+
+            //Act
+            output = CodingTest.VenderMachine.WantCoin(coinValue);
+
+            //Assert
+            Assert.AreEqual(expexted, output);
+
+            #endregion
+
+        }
+
+        [TestMethod]
+        public void _IsRequiredCoin()
+        {
+            //Arrange
+            List<CodingTest.product> products = CodingTest.VenderMachine.GetProductList();
+            CodingTest.product p = products[0];
+
+            double inputCoin = 0.10; bool expexted = true;
+
+            //Act
+            bool status = CodingTest.VenderMachine.IsRequiredCoin(p, inputCoin);
+
+            //Assert
+            Assert.AreEqual(expexted, status);
+
+        }
 
     }
 }
