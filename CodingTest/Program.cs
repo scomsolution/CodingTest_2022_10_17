@@ -10,7 +10,6 @@ namespace CodingTest
     {
         static double totalCoin = 0;
         static product p = new product();
-        static bool IsValidProductID = false;
         static int productIDorIndex = -1;
 
         static void Main(string[] args)
@@ -21,20 +20,7 @@ namespace CodingTest
 
             Console.WriteLine("Enter Coin : ");
             double newCoin = EnterMoreCoin(Console.ReadLine());
-
-            //double newCoin = VenderMachine.WantCoin(Console.ReadLine());
-            //while (!VenderMachine.IsValidCoin(newCoin))
-            //{
-            //    Console.WriteLine("Enter valid Coin : ");
-            //    newCoin = VenderMachine.WantCoin(Console.ReadLine());
-            //}
-
             totalCoin = totalCoin + newCoin;
-
-
-            //???
-            //double newCoin = VenderMachine.RequiredCoin(p);
-            //totalCoin = totalCoin + newCoin;
 
             string ProductList = VenderMachine.ShowProductList();
             Console.WriteLine("Please select product by Product ID...");
